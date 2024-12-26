@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Calendario de Adviento Navideño Mejorado</title>
+  <!-- Fuentes de Google (Navideña + Limpia) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link 
+    href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@400;700&family=Poppins:wght@400;700&display=swap" 
+    rel="stylesheet"
+  >
+  <style>
+    /* ----------------------------------------------------
+       RESET & VARIABLES
+    ---------------------------------------------------- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      /* Colores navideños */
+      --navy-blue: #1c1c3c;
+      --red-christmas: #8B0000;
+      --gold: #DAA520;
+      --green-christmas: #228B22;
+      --white: #fff;
+
+      /* Colores de resplandor para cada día (opcionalmente, 24 distintos) */
+      --glow-1: #FF3333;   /* Rojo fuerte */
+      --glow-2: #33FF33;   /* Verde fuerte */
+      --glow-3: #FFD700;   /* Dorado */
+      --glow-4: #00FFFF;   /* Cian */
+      --glow-5: #FF69B4;   /* Rosa */
+      --glow-6: #9932CC;   /* Morado */
+      --glow-7: #FFA500;   /* Naranja */
+      --glow-8: #87CEFA;   /* Azul claro */
+      --glow-9: #FF1493;   /* Fucsia */
+      --glow-10: #ADFF2F;  /* Verde lima */
+      --glow-11: #FFD700;  /* Dorado */
+      --glow-12: #FF3333;  /* Rojo */
+      --glow-13: #33FF33;
+      --glow-14: #FFD700;
+      --glow-15: #00FFFF;
+      --glow-16: #FF69B4;
+      --glow-17: #9932CC;
+      --glow-18: #FFA500;
+      --glow-19: #87CEFA;
+      --glow-20: #FF1493;
+      --glow-21: #ADFF2F;
+      --glow-22: #FFD700;
+      --glow-23: #FF3333;
+      --glow-24: #33FF33;
+    }
+
+    /* ----------------------------------------------------
+       BODY & BACKGROUND
+    ---------------------------------------------------- */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #FDEDEC 0%, #FFC1C1 100%);
+      color: #333;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative; /* Para posicionar el árbol y las luces */
+      min-height: 100vh;  /* Ocupa toda la pantalla vertical */
+      overflow-x: hidden; /* Evita scroll horizontal si algo se sale */
+    }
+
+    h1 {
+      font-family: 'Mountains of Christmas', cursive;
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: var(--red-christmas);
+      text-shadow: 2px 2px 2px rgba(0,0,0,0.2);
+      position: relative;
+      z-index: 2; /* Para que esté sobre las luces */
+    }
+
+    /* ----------------------------------------------------
+       LUCES NAVIDEÑAS ANIMADAS
+       Basado en una fila de imágenes (cada luz) con animación parpadeante
+    ---------------------------------------------------- */
+    .lights {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      padding: 10px;
+      z-index: 1; /* Detrás del título pero sobre el fondo */
+    }
+
+    .lights img {
+      width: 10px;
+      animation: blink 2s infinite;
+    }
+    /* Para darle distintos delays a cada luz (para que no parpadeen al mismo tiempo) */
+    .lights img:nth-child(1) { animation-delay: 0.2s; }
+    .lights img:nth-child(2) { animation-delay: 0.4s; }
+    .lights img:nth-child(3) { animation-delay: 0.6s; }
+    .lights img:nth-child(4) { animation-delay: 0.8s; }
+    .lights img:nth-child(5) { animation-delay: 1s; }
+    .lights img:nth-child(6) { animation-delay: 1.2s; }
+    .lights img:nth-child(7) { animation-delay: 1.4s; }
+    .lights img:nth-child(8) { animation-delay: 1.6s; }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+
+    /* ----------------------------------------------------
+       ARBOL NAVIDEÑO
+       (Podrías usar un div con background, un SVG, etc.)
+    ---------------------------------------------------- */
+    .tree {
+      position: absolute;
+      bottom: 0;
+      right: 20px;
+      width: 150px;       /* Ajusta según tu imagen */
+      height: auto;
+      z-index: 0;         /* Al fondo */
+      opacity: 0.9;       /* Leve transparencia para estilo */
+    }
+
+    /* ----------------------------------------------------
+       CONTENEDOR (CALENDARIO) 
+    ---------------------------------------------------- */
+    .container {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: 15px;
+      max-width: 1200px;
+      width: 100%;
+      margin-bottom: 60px;
+      position: relative;
+      z-index: 2; /* Sobre las luces y el árbol */
+    }
+
+    /* ----------------------------------------------------
+       CASILLAS "DAY"
+    ---------------------------------------------------- */
+    .day {
+      position: relative;
+      background: var(--white);
+      border: 3px solid var(--white);
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.4s, border-color 0.4s, box-shadow 0.4s;
+    }
+
+    /* Efecto al pasar el mouse (sutil) */
+    .day:hover {
+      transform: translateY(-3px) rotate(-1deg);
+      border-color: var(--gold);
+    }
+
+    /* Cada día puede tener un color de resplandor distinto */
+    /* Aplica estas clases manualmente en cada .day si deseas 
+       un color distinto. Por ejemplo, .day.glow-1, .day.glow-2, etc. 
+       Abajo verás cómo se aplica. 
+    */
+    .day.glow-1.revealed { box-shadow: 0 0 15px var(--glow-1); }
+    .day.glow-2.revealed { box-shadow: 0 0 15px var(--glow-2); }
+    .day.glow-3.revealed { box-shadow: 0 0 15px var(--glow-3); }
+    .day.glow-4.revealed { box-shadow: 0 0 15px var(--glow-4); }
+    .day.glow-5.revealed { box-shadow: 0 0 15px var(--glow-5); }
+    .day.glow-6.revealed { box-shadow: 0 0 15px var(--glow-6); }
+    .day.glow-7.revealed { box-shadow: 0 0 15px var(--glow-7); }
+    .day.glow-8.revealed { box-shadow: 0 0 15px var(--glow-8); }
+    .day.glow-9.revealed { box-shadow: 0 0 15px var(--glow-9); }
+    .day.glow-10.revealed { box-shadow: 0 0 15px var(--glow-10); }
+    .day.glow-11.revealed { box-shadow: 0 0 15px var(--glow-11); }
+    .day.glow-12.revealed { box-shadow: 0 0 15px var(--glow-12); }
+    .day.glow-13.revealed { box-shadow: 0 0 15px var(--glow-13); }
+    .day.glow-14.revealed { box-shadow: 0 0 15px var(--glow-14); }
+    .day.glow-15.revealed { box-shadow: 0 0 15px var(--glow-15); }
+    .day.glow-16.revealed { box-shadow: 0 0 15px var(--glow-16); }
+    .day.glow-17.revealed { box-shadow: 0 0 15px var(--glow-17); }
+    .day.glow-18.revealed { box-shadow: 0 0 15px var(--glow-18); }
+    .day.glow-19.revealed { box-shadow: 0 0 15px var(--glow-19); }
+    .day.glow-20.revealed { box-shadow: 0 0 15px var(--glow-20); }
+    .day.glow-21.revealed { box-shadow: 0 0 15px var(--glow-21); }
+    .day.glow-22.revealed { box-shadow: 0 0 15px var(--glow-22); }
+    .day.glow-23.revealed { box-shadow: 0 0 15px var(--glow-23); }
+    .day.glow-24.revealed { box-shadow: 0 0 15px var(--glow-24); }
+
+    /* --- NÚMERO DE DÍA --- */
+    .day-number {
+      font-family: 'Mountains of Christmas', cursive;
+      font-size: 2rem;
+      font-weight: 700;
+      text-align: center;
+      padding: 30px 0;
+      color: var(--green-christmas);
+      transition: opacity 0.4s;
+      opacity: 1; /* Visible por defecto */
+    }
+
+    /* --- CONTENIDO (oculto por defecto) --- */
+    .gift-content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.4s;
+      padding: 15px;
+      text-align: center;
+    }
+
+    /* Cuando se hace reveal, ocultamos número, mostramos contenido */
+    .day.revealed .day-number {
+      opacity: 0;
+    }
+    .day.revealed .gift-content {
+      opacity: 1;
+    }
+
+    /* --- TEXTO EN gift-content --- */
+    .gift-content p {
+      font-family: 'Poppins', sans-serif;
+      margin-bottom: 10px;
+      font-size: 1rem;
+      line-height: 1.4;
+      color: var(--red-christmas);
+    }
+
+    /* --- IMÁGENES (OPCIONAL) --- */
+    .gift-content img {
+      max-width: 60%;
+      height: auto;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      margin-bottom: 10px;
+    }
+
+    /* ----------------------------------------------------
+       FOOTER / MENSAJE FINAL
+    ---------------------------------------------------- */
+    .footer-text {
+      font-family: 'Mountains of Christmas', cursive;
+      font-size: 1.4rem;
+      color: var(--red-christmas);
+      text-align: center;
+      position: relative;
+      z-index: 2; 
+    }
+
+  </style>
+</head>
+<body>
+  <!-- LUCES NAVIDEÑAS (PARPADEO) -->
+  <!-- ARBOL NAVIDEÑO (DECORACIÓN) -->
+
+
+  <h1>Calendario de Adviento para el Amor de mi Vida
+    (Alejandra)
+  </h1>
+
+  <div class="container">
+    <!-- Ejemplo: Día 1 con glow-1 -->
+    <div class="day glow-1" onclick="toggleGift(this)">
+      <div class="day-number">1 <div class="lights">
+        <img src="img/g33.png" alt="Luz Verde">
+      </div></div>
+     
+      <div class="gift-content">
+        <p>Casaca</p>
+      </div>
+    </div>
+
+    <!-- Día 2 con glow-2 -->
+    <div class="day glow-2" onclick="toggleGift(this)">
+      <div class="day-number">2<div class="lights">
+        <img src="img/g34.png" alt="Luz Verde">
+      </div></div>
+      
+      <div class="gift-content">
+        <p>Vestido</p>
+      </div>
+    </div>
+
+    <!-- Día 3 con glow-3 -->
+    <div class="day glow-3" onclick="toggleGift(this)">
+      <div class="day-number">3<div class="lights">
+        <img src="img/g37.png" alt="Luz Verde">
+      </div></div>
+      
+      <div class="gift-content">
+        <p>Sandalia</p>
+      </div>
+    </div>
+
+    <!-- Día 4 con glow-4 -->
+    <div class="day glow-4" onclick="toggleGift(this)">
+      <div class="day-number">4<div class="lights">
+        <img src="img/g36.png" alt="Luz Verde">
+      </div></div>
+      
+      <div class="gift-content">
+        <p>Secadora</p>
+      </div>
+    </div>
+
+    <!-- Día 5 con glow-5 -->
+    <div class="day glow-5" onclick="toggleGift(this)">
+      <div class="day-number">5<div class="lights">
+        <img src="img/g37.png" alt="Luz Verde">
+      </div></div>
+      
+      <div class="gift-content">
+        <p>Labial</p>
+      </div>
+    </div>
+
+    <!-- Día 6 con glow-6 -->
+    <div class="day glow-6" onclick="toggleGift(this)">
+      <div class="day-number">6<div class="lights">
+        <img src="img/g38.png" alt="Luz Verde">
+      </div></div>
+      
+      <div class="gift-content">
+        <p>Audífonos</p>
+      </div>
+    </div>
+
+    <!-- Día 7 con glow-7 -->
+    <div class="day glow-7" onclick="toggleGift(this)">
+      <div class="day-number">7<div class="lights">
+        <img src="img/g39.png" alt="Luz Verde">
+      </div></div>
+      
+      <div class="gift-content">
+        <p>Cuaderno</p>
+      </div>
+    </div>
+
+    <!-- Día 8 con glow-8 -->
+    <div class="day glow-8" onclick="toggleGift(this)">
+      <div class="day-number">8<div class="lights">
+        <img src="img/g38.png" alt="Luz Verde">
+      </div></div>
+      
+      <div class="gift-content">
+        <p>Chocolates</p>
+      </div>
+    </div>
+
+    <!-- Día 9 con glow-9 -->
+    <div class="day glow-9" onclick="toggleGift(this)">
+      <div class="day-number">9<div class="lights">
+        <img src="img/g33.png" alt="Luz Verde">
+      </div></div>
+      
+      <div class="gift-content">
+        <p>Flores / Lámpara</p>
+      </div>
+    </div>
+
+    <!-- Día 10 con glow-10 -->
+    <div class="day glow-10" onclick="toggleGift(this)">
+      <div class="day-number">10<div class="lights">
+        <img src="img/g34.png" alt="Luz Verde">
+      </div></div>
+      
+      <div class="gift-content">
+        <p>Tés</p>
+      </div>
+    </div>
+
+    <!-- Día 11 con glow-11 -->
+    <div class="day glow-11" onclick="toggleGift(this)">
+      <div class="day-number">11<div class="lights">
+        <img src="img/g38.png" alt="Luz Verde">
+      </div></div>
+      
+      <div class="gift-content">
+        <p>Vale de Cabello</p>
+      </div>
+    </div>
+
+    <!-- Día 12 con glow-12 -->
+    <div class="day glow-12" onclick="toggleGift(this)">
+      <div class="day-number">12<div class="lights">
+        <img src="img/g36.png" alt="Luz Verde">
+      </div></div>
+      
+      <div class="gift-content">
+        <p>Vale para cara</p>
+      </div>
+    </div>
+
+    <!-- Día 13 con glow-13 -->
+    <div class="day glow-13" onclick="toggleGift(this)">
+      <div class="day-number">13<div class="lights">
+        <img src="img/g37.png" alt="Luz Verde">
+      </div></div>
+      
+      <div class="gift-content">
+        <p>Calendario</p>
+      </div>
+    </div>
+
+    <!-- Día 14 con glow-14 -->
+    <div class="day glow-14" onclick="toggleGift(this)">
+      <div class="day-number">14<div class="lights">
+        <img src="img/g38.png" alt="Luz Verde">
+      </div></div>
+      
+      <div class="gift-content">
+        <p>Yogurera</p>
+      </div>
+    </div>
+
+    <!-- Día 15 con glow-15 -->
+    <div class="day glow-15" onclick="toggleGift(this)">
+      <div class="day-number">15 <div class="lights">
+        <img src="img/g39.png" alt="Luz Verde">
+      </div></div>
+     
+      <div class="gift-content">
+        <p>Carta de amor</p>
+      </div>
+    </div>
+
+    <!-- Día 16 con glow-16 -->
+    <div class="day glow-16" onclick="toggleGift(this)">
+      <div class="day-number">16<div class="lights">
+        <img src="img/g33.png" alt="Luz Verde">
+      </div></div>
+      
+      <div class="gift-content">
+        <p>Cocinar para ella</p>
+      </div>
+    </div>
+
+    <!-- Día 17 con glow-17 -->
+    <div class="day glow-17" onclick="toggleGift(this)">
+      <div class="day-number">17<div class="lights">
+        <img src="img/g34.png" alt="Luz Verde">
+      </div></div>
+      
+      <div class="gift-content">
+        <p>Masaje de pies</p>
+      </div>
+    </div>
+
+    <!-- Día 18 con glow-18 -->
+    <div class="day glow-18" onclick="toggleGift(this)">
+      <div class="day-number">18<div class="lights">
+        <img src="img/g36.png" alt="Luz Verde">
+      </div></div>
+      
+      <div class="gift-content">
+        <p>Masaje de cabello</p>
+      </div>
+    </div>
+
+    <!-- Día 19 con glow-19 -->
+    <div class="day glow-19" onclick="toggleGift(this)">
+      <div class="day-number">19<div class="lights">
+        <img src="img/g37.png" alt="Luz Verde">
+      </div></div>
+      
+      <div class="gift-content">
+        <p>Carta de navidad</p>
+      </div>
+    </div>
+
+    <!-- Día 20 con glow-20 -->
+    <div class="day glow-20" onclick="toggleGift(this)">
+      <div class="day-number">20<div class="lights">
+        <img src="img/g39.png" alt="Luz Verde">
+      </div></div>
+      
+      <div class="gift-content">
+        <p>Lentes de sol</p>
+      </div>
+    </div>
+
+    <!-- Día 21 con glow-21 -->
+    <div class="day glow-21" onclick="toggleGift(this)">
+      <div class="day-number">21 <div class="lights">
+        <img src="img/g34.png" alt="Luz Verde">
+      </div></div>
+     
+      <div class="gift-content">
+        <p>Algo raro y curioso</p>
+      </div>
+    </div>
+
+    <!-- Día 22 con glow-22 -->
+    <div class="day glow-22" onclick="toggleGift(this)">
+      <div class="day-number">22<div class="lights">
+        <img src="img/g33.png" alt="Luz Verde">
+      </div></div>
+      
+      <div class="gift-content">
+        <p>Pinturas y lienzo</p>
+      </div>
+    </div>
+
+    <!-- Día 23 con glow-23 -->
+    <div class="day glow-23" onclick="toggleGift(this)">
+      <div class="day-number">
+        23
+            <div class="lights">
+            <img src="img/g36.png" alt="Luz Verde">
+          </div>
+        </div>
+      
+      <div class="gift-content">
+        <p>Bolsa de frutos secos</p>
+      </div>
+    </div>
+
+    <!-- Día 24 con glow-24 -->
+    <div class="day glow-24" onclick="toggleGift(this)">
+      <div class="day-number">24 <div class="lights">
+        <img src="img/g39.png" alt="Luz Verde">
+      </div></div>
+     
+      <div class="gift-content">
+        <p>Una foto juntos / Bolígrafo</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-text">
+    <p>¡Feliz Navidad!<br>Que cada día sea una sorpresa inolvidable.</p>
+  </div>
+
+  <!-- ==== JAVASCRIPT ==== -->
+  <script>
+    /**
+     * toggleGift(element)
+     * Al hacer clic en la casilla (.day), 
+     * alterna la clase "revealed" para mostrar/ocultar el regalo.
+     */
+    function toggleGift(element) {
+      element.classList.toggle("revealed");
+    }
+
+    /**
+     * Si prefieres que, al hacer clic, se muestre el contenido
+     * y NO se oculte nunca más (es decir, sin toggle),
+     * usa esto en lugar de la función anterior:
+     * 
+     * function toggleGift(element) {
+     *   element.classList.add("revealed");
+     * }
+     * 
+     * De ese modo, una vez revelado, ya no volverá a ocultarse.
+     */
+  </script>
+</body>
+</html>
